@@ -8,8 +8,13 @@ class SaudacaoUtilTest {
 
     @Test
     public void saudarComBomDia() {
+        //Arrange - prepara o cenário
         int hora = 9;
+
+        //Act - executa o cenário
         String saudacao = SaudacaoUtil.saudar(hora);
+
+        //Assert - realiza a asserção
         assertEquals("Bom dia", saudacao);
     }
 
@@ -30,30 +35,27 @@ class SaudacaoUtilTest {
     @Test
     public void saudarComBomDiaAPartir5h() {
         String saudacao = SaudacaoUtil.saudar(5);
-
         assertEquals("Bom dia", saudacao, "Saudação incorreta!");
-
     }
 
     @Test
     public void saudarComBoaNoiteAte4h() {
         String saudacao = SaudacaoUtil.saudar(4);
-
         assertEquals("Boa noite", saudacao, "Saudação incorreta!");
-
     }
 
 
     @Test
     public void deveLancarException() {
-        IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> SaudacaoUtil.saudar(-10));
-
-        assertEquals("Hora inválida", illegalArgumentException.getMessage());
+        int horaInvalida = -10;
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> SaudacaoUtil.saudar(horaInvalida));
+        assertEquals("Hora inválida", exception.getMessage());
     }
 
     //pode não ser util nesse contexto, mas existe essa possibilidade
     @Test
     public void naoDeveLancarException() {
-        assertDoesNotThrow(() -> SaudacaoUtil.saudar(0));
+        int horaValida = 0;
+        assertDoesNotThrow(() -> SaudacaoUtil.saudar(horaValida));
     }
 }
