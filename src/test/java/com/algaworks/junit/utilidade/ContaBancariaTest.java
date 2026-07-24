@@ -9,46 +9,51 @@ import static org.junit.jupiter.api.Assertions.*;
 class ContaBancariaTest {
 
     @Test
-    public void saldoNaoPodeSerNulo() {
+    void saldoNaoPodeSerNulo() {
         IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> new ContaBancaria(null));
 
-        assertEquals("Saldo inválido.", illegalArgumentException.getMessage());
+        assertEquals("Valor inválido.", illegalArgumentException.getMessage());
     }
 
     @Test
-    public void saldoPodeSerNegativo() {
+    void saldoPodeSerNegativo() {
         BigDecimal saldoNegativo = new BigDecimal("-100");
         assertDoesNotThrow(() -> new ContaBancaria(saldoNegativo));
     }
 
     @Test
-    public void saldoPodeSerZero() {
+    void saldoPodeSerZero() {
         assertDoesNotThrow(() -> new ContaBancaria(BigDecimal.ZERO));
     }
 
     @Test
-    public void saqueValorNaoPodeSerNulo() {
+    void saldo() {
+        ContaBancaria contaBancaria = new ContaBancaria(new BigDecimal("29.90"));
+        assertEquals(new BigDecimal("29.90"), contaBancaria.saldo());
+    }
+
+    @Test
+    void saqueValorNaoPodeSerNulo() {
         ContaBancaria contaBancaria = new ContaBancaria(new BigDecimal(1000));
         IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> contaBancaria.saque(null));
         assertEquals("Valor inválido.", illegalArgumentException.getMessage());
     }
 
     @Test
-    public void saqueValorNaoPodeSerZeroOuNegativo() {
-        ContaBancaria contaBancaria = new ContaBancaria(new BigDecimal(1000));
-
-        IllegalArgumentException valorNegativo = assertThrows(IllegalArgumentException.class, () -> contaBancaria.saque(new BigDecimal("-100")));
-        IllegalArgumentException valorZero = assertThrows(IllegalArgumentException.class, () -> contaBancaria.saque(BigDecimal.ZERO));
-
-
-        assertAll("Validado valor de entrada",
-                () -> assertEquals("Valor não pode ser zero.", valorZero.getMessage()),
-                () -> assertEquals("Valor não pode ser negativo.", valorNegativo.getMessage())
-        );
+    void saqueValorNaoPodeSerZero() {
+        ContaBancaria contaBancaria = new ContaBancaria(BigDecimal.TEN);
+        assertThrows(IllegalArgumentException.class, () -> contaBancaria.saque(BigDecimal.ZERO));
     }
 
     @Test
-    public void saqueSaldoInsuficiente() {
+    void saqueValorNaoPodeSerNegativo() {
+        ContaBancaria contaBancaria = new ContaBancaria(BigDecimal.TEN);
+        assertThrows(IllegalArgumentException.class, () -> contaBancaria.saque(new BigDecimal("-100")));
+    }
+
+
+    @Test
+    void saqueSaldoInsuficiente() {
         ContaBancaria contaBancaria = new ContaBancaria(new BigDecimal(1000));
         BigDecimal valorDeSaque = new BigDecimal("2000");
         RuntimeException runtimeException = assertThrows(RuntimeException.class, () -> contaBancaria.saque(valorDeSaque));
@@ -56,20 +61,54 @@ class ContaBancariaTest {
     }
 
     @Test
-    public void saqueNormal() {
-        ContaBancaria contaBancaria = new ContaBancaria(new BigDecimal(1000));
-        BigDecimal valorDeSaque = new BigDecimal("500");
-
-        contaBancaria.saque(valorDeSaque);
+    public void saqueValor() {
+        ContaBancaria contaBancaria = new ContaBancaria(new BigDecimal("1000"));
+        contaBancaria.saque(new BigDecimal("500"));
 
         BigDecimal saldoFinalDaConta = contaBancaria.saldo();
 
-        assertEquals(valorDeSaque, saldoFinalDaConta);
+        assertEquals(new BigDecimal("500"), saldoFinalDaConta);
     }
 
     @Test
-    public void
+    void depositoValorNaoPodeSerNulo() {
+        ContaBancaria contaBancaria = new ContaBancaria(BigDecimal.TEN);
+        IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> contaBancaria.deposito(null));
+        assertEquals("Valor inválido.", illegalArgumentException.getMessage());
+    }
 
+    @Test
+    void depositoValorNaoPodeSerZero() {
+        ContaBancaria contaBancaria = new ContaBancaria(BigDecimal.TEN);
+        IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> contaBancaria.deposito(BigDecimal.ZERO));
+        assertEquals("Valor inválido.", illegalArgumentException.getMessage());
+    }
+
+    @Test
+    void depositoValorNaoPodeSerNegativo() {
+        ContaBancaria contaBancaria = new ContaBancaria(BigDecimal.TEN);
+        IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> contaBancaria.deposito(new BigDecimal("-100")));
+        assertEquals("Valor inválido.", illegalArgumentException.getMessage());
+    }
+
+    @Test
+    void depositarValor() {
+        ContaBancaria contaBancaria = new ContaBancaria(BigDecimal.TEN);
+
+        contaBancaria.deposito(BigDecimal.TEN);
+
+        BigDecimal saldoFinalDaConta = contaBancaria.saldo();
+
+        assertEquals(new BigDecimal("20"), saldoFinalDaConta);
+    }
+
+    @Test
+    void saqueAposDeposito() {
+        ContaBancaria contaBancaria = new ContaBancaria(new BigDecimal("100"));
+        contaBancaria.deposito(new BigDecimal("50"));
+        contaBancaria.saque(BigDecimal.TEN);
+        assertEquals(new BigDecimal("140"), contaBancaria.saldo());
+    }
 
 
 }
