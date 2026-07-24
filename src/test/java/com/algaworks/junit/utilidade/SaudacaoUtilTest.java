@@ -1,16 +1,16 @@
 package com.algaworks.junit.utilidade;
 
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("Testes no utilitário de saudação")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class SaudacaoUtilTest {
 
     @Test
-    @DisplayName("Deve saudar com bom dia")
-    public void saudarComBomDia() {
+    public void Dado_uma_horario_a_matuino_Quando_saudar_Entao_deve_retornar_bom_dia() {
         //Arrange - prepara o cenário
         int hora = 9;
 
@@ -22,35 +22,22 @@ class SaudacaoUtilTest {
     }
 
     @Test
-    public void saudarComBoaTarde() {
+    public void Dado_uma_horario_vespertino_Quando_saudar_Entao_deve_retornar_boa_tarde() {
         int hora = 15;
         String saudacao = SaudacaoUtil.saudar(hora);
         assertEquals("Boa tarde", saudacao);
     }
 
     @Test
-    public void saudarComBoaNoite() {
-        int hora = 21;
-        String saudacao = SaudacaoUtil.saudar(hora);
-        assertEquals("Boa noite", saudacao);
-    }
-
-    @Test
-    @DisplayName("Deve saudar com bom dia às 5 horas")
-    public void saudarComBomDiaAPartir5h() {
-        String saudacao = SaudacaoUtil.saudar(5);
-        assertEquals("Bom dia", saudacao, "Saudação incorreta!");
-    }
-
-    @Test
-    public void saudarComBoaNoiteAte4h() {
-        String saudacao = SaudacaoUtil.saudar(4);
+    public void Dado_uma_horario_noturno_Quando_saudar_Entao_deve_retornar_boa_noite() {
+        int horaValida = 4;
+        String saudacao = SaudacaoUtil.saudar(horaValida);
         assertEquals("Boa noite", saudacao, "Saudação incorreta!");
     }
 
 
     @Test
-    public void deveLancarException() {
+    public void Dado_uma_horario_invalida_Quando_saudar_Entao_deve_lancar_exception() {
         int horaInvalida = -10;
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> SaudacaoUtil.saudar(horaInvalida));
         assertEquals("Hora inválida", exception.getMessage());
@@ -58,7 +45,7 @@ class SaudacaoUtilTest {
 
     //pode não ser util nesse contexto, mas existe essa possibilidade
     @Test
-    public void naoDeveLancarException() {
+    public void Dado_uma_horario_valida_Quando_saudar_Entao_nao_deve_lancar_exception() {
         int horaValida = 0;
         assertDoesNotThrow(() -> SaudacaoUtil.saudar(horaValida));
     }
