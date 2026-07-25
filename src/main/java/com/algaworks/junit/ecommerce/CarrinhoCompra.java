@@ -24,7 +24,7 @@ public class CarrinhoCompra {
 
 	public List<ItemCarrinhoCompra> getItens() {
 		//TODO deve retornar uma nova lista para que a antiga não seja alterada
-		return null;
+		return new ArrayList<>(itens);
 	}
 
 	public Cliente getCliente() {
@@ -35,12 +35,30 @@ public class CarrinhoCompra {
 		//TODO parâmetros não podem ser nulos, deve retornar uma exception
 		//TODO quantidade não pode ser menor que 1
 		//TODO deve incrementar a quantidade caso o produto já exista
+		Objects.requireNonNull(produto);
+		validaQuantidade(quantidade);
+
+		encontrarItemPeloProduto(produto)
+				.ifPresentOrElse(
+						item -> item.adicionarQuantidade(quantidade),
+						() -> adicionaNovoItem(produto, quantidade)
+				);
 	}
 
 	public void removerProduto(Produto produto) {
 		//TODO parâmetro não pode ser nulo, deve retornar uma exception
 		//TODO caso o produto não exista, deve retornar uma exception
 		//TODO deve remover o produto independente da quantidade
+
+		Objects.requireNonNull(produto);
+
+		for (ItemCarrinhoCompra item : itens) {
+			if (produto.equals(item.getProduto())) {
+				itens.remove(item);
+			} else {
+				throw new IllegalArgumentException("Produto não existe no carrinho");
+			}
+		}
 	}
 
 	public void aumentarQuantidadeProduto(Produto produto) {
@@ -68,6 +86,22 @@ public class CarrinhoCompra {
 
 	public void esvaziar() {
 		//TODO deve remover todos os itens
+	}
+
+	public Optional<ItemCarrinhoCompra> encontrarItemPeloProduto(Produto produto) {
+		return itens.stream()
+				.filter(item -> item.getProduto().equals(produto))
+				.findFirst();
+	}
+
+	public void adicionaNovoItem(Produto produto, int quatidade) {
+		itens.add(new ItemCarrinhoCompra(produto, quatidade));
+	}
+
+	public void validaQuantidade(int quantidade) {
+		if (quantidade <= 0) {
+			throw new IllegalArgumentException("Quantidade inválida.");
+		}
 	}
 
 	@Override
