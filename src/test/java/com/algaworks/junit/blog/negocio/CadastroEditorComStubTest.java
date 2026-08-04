@@ -2,7 +2,10 @@ package com.algaworks.junit.blog.negocio;
 
 import com.algaworks.junit.blog.exception.RegraNegocioException;
 import com.algaworks.junit.blog.modelo.Editor;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
@@ -57,7 +60,8 @@ class CadastroEditorComStubTest {
         editor.setEmail("rafael.existe@email.com");
         try {
             cadastroEditor.criar(editor);
-        } catch (RegraNegocioException e) {}
+        } catch (RegraNegocioException e) {
+        }
         assertFalse(armazenamentoEditor.chamouSalvar);
     }
 }
