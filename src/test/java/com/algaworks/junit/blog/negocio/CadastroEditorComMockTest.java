@@ -2,6 +2,7 @@ package com.algaworks.junit.blog.negocio;
 
 
 import com.algaworks.junit.blog.armazenamento.ArmazenamentoEditor;
+import com.algaworks.junit.blog.exception.EditorNaoEncontradoException;
 import com.algaworks.junit.blog.exception.RegraNegocioException;
 import com.algaworks.junit.blog.modelo.Editor;
 import org.junit.jupiter.api.*;
@@ -118,4 +119,47 @@ public class CadastroEditorComMockTest {
             Mockito.verify(gerenciadorEnvioEmail, Mockito.never()).enviarEmail(Mockito.any());
         }
     }
+
+    @Nested
+    class EdicaoComEditorValido {
+
+        @Spy
+        Editor editor = new Editor(1L, "Rafael", "rafael@email.com", BigDecimal.TEN, true);
+
+        @BeforeEach
+        void init() {
+            Mockito.when(armazenamentoEditor.salvar(editor)).thenAnswer(invocacao -> invocacao.getArgument(0, Editor.class));
+            Mockito.when(armazenamentoEditor.encontrarPorId(1L)).thenReturn(Optional.of(editor));
+        }
+
+        @Test
+        void Dado_um_editor_valido_Quando_editar_Entao_deve_alterar_editor_saldo() {
+            Editor editorAtualizado = new Editor(1L, "Rafael Silva", "rafael.silva@email.com", BigDecimal.ZERO, false);
+            cadastroEditor.editar(editorAtualizado);
+            Mockito.verify(editor, Mockito.times(1)).atualizarComDados(editorAtualizado);
+
+            InOrder inOrder = Mockito.inOrder(editor, armazenamentoEditor);
+            inOrder.verify(editor).atualizarComDados(editorAtualizado);
+            inOrder.verify(armazenamentoEditor).salvar(editor);
+        }
+    }
+
+    @Nested
+    class EdicaoComEditorInexistente {
+
+        Editor editor = new Editor(99L, "Rafael", "rafael@email.com", BigDecimal.TEN, true);
+
+        @BeforeEach
+        void init() {
+            Mockito.when(armazenamentoEditor.encontrarPorId(99L)).thenReturn(Optional.empty());
+        }
+
+        @Test
+        void Dado_um_editor_que_nao_exista_Quando_editar_Entao_deve_lancar_exception() {
+            assertThrows(EditorNaoEncontradoException.class, () -> cadastroEditor.editar(editor));
+            Mockito.verify(armazenamentoEditor, Mockito.never()).salvar(Mockito.any(Editor.class));
+        }
+    }
+
+
 }
