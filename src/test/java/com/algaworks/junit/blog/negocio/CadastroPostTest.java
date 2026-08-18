@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CadastroPostTest {
 
     @Spy
-    Editor editor = new Editor(null, "Rafael", "rafael@email.com", BigDecimal.TEN, true);
+    Editor editor = EditorTestData.umEditorNovo().build();
 
     @Mock
     ArmazenamentoPost armazenamentoPost;
@@ -44,7 +44,7 @@ class CadastroPostTest {
     final class Cadastrar {
 
         @Spy
-        Post post = new Post("Olá Java", "Olá mundo Java", editor, true, true);
+        Post post = PostTestData.umPostNovo().build();
 
         @Test
         void Dado_um_post_valido__Quando_cadastrar__Entao_deve_salvar() {
@@ -179,10 +179,8 @@ class CadastroPostTest {
     @Nested
     final class Editar {
 
-        Ganhos ganhos = new Ganhos(BigDecimal.TEN, 400, new BigDecimal("2000"));
-
         @Spy
-        Post post = new Post(1L, "Olá Java", "Olá mundo Java", editor, "ola-java-1234356", ganhos, true, true);
+        Post post = PostTestData.umPostExistente().build();
 
         @Test
         void Dado_um_post_valido__Quando_editar__Entao_deve_salvar() {
@@ -196,7 +194,7 @@ class CadastroPostTest {
 
         @Test
         void Dado_um_post_valido__Quando_editar__Entao_deve_alterar_post_salvo() {
-            Post postAlterado = new Post(1L, "Olá Java", "Olá Java", editor, "ola-java", new Ganhos(BigDecimal.TEN, 4, BigDecimal.TEN), true, true);
+            Post postAlterado = PostTestData.umPostExistente().build();
 
             Mockito.when(armazenamentoPost.salvar(Mockito.any(Post.class))).then(invocacao -> invocacao.getArgument(0, Post.class));
             Mockito.when(armazenamentoPost.encontrarPorId(1L)).thenReturn(Optional.ofNullable(post));

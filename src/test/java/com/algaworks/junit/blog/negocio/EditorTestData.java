@@ -7,14 +7,11 @@ import java.math.BigDecimal;
 //Design Pattern Object Mother com Builder
 public class EditorTestData {
 
-    private EditorTestData() {}
+    private EditorTestData() {
+    }
 
     public static Editor.Builder umEditorNovo() {
-        return Editor.builder()
-                .comNome("Rafael")
-                .comEmail("rafael@email.com")
-                .comValorPagoPorPalavra(BigDecimal.TEN)
-                .comPremium(true);
+        return Editor.builder().comNome("Rafael").comEmail("rafael@email.com").comValorPagoPorPalavra(BigDecimal.TEN).comPremium(true);
     }
 
     public static Editor.Builder umEditorExistente() {
