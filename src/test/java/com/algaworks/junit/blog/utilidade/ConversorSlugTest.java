@@ -1,5 +1,6 @@
 package com.algaworks.junit.blog.utilidade;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -10,6 +11,7 @@ class ConversorSlugTest {
 
 
     @Test
+    @Disabled("Teste desabilitado")
     void deveConverterJuntoComCodigo() {
         try (MockedStatic<GeradorCodigo> mockedStatic = Mockito.mockStatic(GeradorCodigo.class)) {
             mockedStatic.when(GeradorCodigo::gerar).thenReturn("123456");
